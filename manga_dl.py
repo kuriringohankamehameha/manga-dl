@@ -8,7 +8,22 @@ from PIL import Image
 from bs4 import BeautifulSoup
 import shutil
 import search
-# from fpdf import FPDF
+import platform
+
+machine = {'Linux': 'L', 'Windows': 'W', 'Darwin': 'M'}
+
+try:
+    my_system = machine.get(platform.system(), 'E')
+except KeyError:
+    print('Error: System is not Linux/Windows/Mac')
+    exit(0)
+
+if my_system == 'E':
+    print('Error: System is not Linux/Windows/Mac')
+    exit(0)
+elif my_system == 'W':
+    from multiprocessing import Pool
+    pool = Pool()
 
 """
 Mirror Options:
@@ -35,7 +50,7 @@ inp_string = input('Enter the search query:\n')
 inp_list = inp_string.split(' ')
 
 if len(inp_list) == 1 and inp_list[0].isdigit():
-    chap_list = int(inp_list[0])
+    chap_list = [int(inp_list[0])]
 elif len(inp_list) == 3 and inp_list[2] == 'range' and inp_list[0].isdigit() and inp_list[1].isdigit():
     chap_list = [i for i in range(int(inp_list[0]), int(inp_list[1]) + 1)]
 elif all(i.isdigit() for i in inp_list):
@@ -75,21 +90,6 @@ def remove(path):
         shutil.rmtree(path)  # remove dir and all contains
     else:
         raise ValueError("file {} is not a file or dir.".format(path))
-
-
-# def make_pdf(pdfFileName, listPages, curr, parent):
-#     """ Convert the batch of images into a PDF file """
-#     if (parent):
-#         parent += "/"
-#     if (curr):
-#         curr += "/"
-#     cover = Image.open(curr + str(listPages[0]) + ".jpg")
-#     width, height = cover.size
-#     pdf = FPDF(unit="pt", format=[width, height])
-#     for page in listPages:
-#         pdf.add_page()
-#         pdf.image(curr + str(page) + ".jpg", 0, 0)
-#     pdf.output(parent + pdfFileName + ".pdf", "F")
 
 
 def pil_open(string):
@@ -140,6 +140,7 @@ def download_chapter(num, chapter_url):
         else:
             make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
             remove(new_dir)
+            print('Finished Chapter ' + str(num))
             exit(0)
 
 
@@ -149,13 +150,24 @@ if __name__ == '__main__':
     if not os.path.isdir(new_dir):
         os.mkdir(new_dir)
     os.chdir(new_dir)
-    for i in chap_list:
-        pid = os.fork()
-        if pid > 0:
-            continue
-        else:
-            download_chapter(i, MIRROR + 'chapter/' +
-                             manga_hash + '/chapter_' + str(i))
-            print('Finished Chapter ' + str(i))
-            exit(0)
+    if my_system != 'W':
+        for i in chap_list:
+            pid = os.fork()
+            if pid > 0:
+                continue
+            else:
+                download_chapter(i, MIRROR + 'chapter/' +
+                                 manga_hash + '/chapter_' + str(i))
+                exit(0)
+    else:
+        process_jobs = []
+        for i in chap_list:
+            process_jobs.append(
+                pool.apply_async(
+                    download_chapter,
+                    [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i)]
+                ))
+        for job in process_jobs:
+            # A job takes a maximum time of 300 seconds
+            job.get(timeout=300)
     os.chdir(orig)
