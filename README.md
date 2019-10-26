@@ -79,5 +79,4 @@ python merge_manga.py list 122 121 Jumbled Aot
 * The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
 
 ### TODO
-* Add Windows support
 * Add cleanup programs
