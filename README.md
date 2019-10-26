@@ -5,8 +5,16 @@ A command line utility to download Manga and batch convert chapters into PDF
 
 ## Usage
 
+Invoke with :
+
 ```bash
 python manga_dl.py Attack on Titan
+
+```
+
+Example output:
+
+```bash
 +------+--------------------------------------+--------------------------------------------------------------+-----------------------------+
 | S.No |              Manga Name              |                      Latest Chapter                          |         Update Time         |
 +------+--------------------------------------+--------------------------------------------------------------+-----------------------------+
