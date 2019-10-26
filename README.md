@@ -1,5 +1,7 @@
 # manga-dl
-A command line interface to download Manga and batch convert chapters into PDF
+A command line utility to download Manga and batch convert chapters into PDF
+
+* Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
 
 ## Usage
 
