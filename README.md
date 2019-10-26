@@ -2,6 +2,7 @@
 A command line utility to download Manga and batch convert chapters into PDF
 
 * Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
+* Windows users may need to update their `PYTHONPATH` environment variable.
 
 ## Usage
 
