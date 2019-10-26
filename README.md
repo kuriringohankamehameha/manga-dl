@@ -3,8 +3,10 @@ A command line utility to download Manga and batch convert chapters into PDF
 
 * Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
 
-* Windows users may need to update their `PYTHONPATH` environment variable. After that, you can invoke the scripts anywhere by specifying the absolute path if you want to run the script from anywhere. 
+* Windows users may need to update their `PYTHONPATH` environment variable. After that, you can invoke the scripts anywhere by specifying the absolute path if you want to run the script from anywhere, run :
+
 `python D:\manga-dl\manga_dl.py One Piece`
+
 If you want to execute the script without specifying it's absolute path, again update suitable environment variables.
 
 ## Usage
