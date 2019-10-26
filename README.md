@@ -5,7 +5,7 @@ A command line utility to download Manga and batch convert chapters into PDF
 
 ## Usage
 
-Invoke with :
+Invoke with : `python manga_dl.py {MANGA_NAME}`
 
 ```bash
 python manga_dl.py Attack on Titan
@@ -46,16 +46,33 @@ This fetches chapters 110, 120 and 122, which are saved in appropriate PDF files
 ## Merging PDFs
 Merging of multiple PDF files can be accomplished via `merge_manga.py`, which processes a batch sequence of PDFs or a list of PDFs in order and merges them into an output PDF file.
 
+There are two ways of merging a batch of PDFs:
+
+* Sequential Merging (Merges PDFs in a range in sequential order)
+
+Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
+
+* List Merging (Merges a list of PDFs in order)
+
+Invoke with : `python merge_manga.py {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
+
+Note : 
+
+* OUTPUT_PDF_NAME can be space separated. It just needs to come after the Chapter Numbers.
+* The Chapter numbers must be integers.
+
+Example Output:
+
 ```bash
 python merge_manga.py 120 122 Attack on Titan Latest
 ```
-* This merges the files `chapter120.pdf`, `chapter121.pdf`, `chapter122.pdf` into `Attack on Titan Latest.pdf`. 
+* This merges the files `chapter120.pdf`, `chapter121.pdf`, `chapter122.pdf` into `'Attack on Titan Latest.pdf'`. 
 
 ```bash
 
 python merge_manga.py list 122 121 Jumbled Aot
 ```
-* This way of merging takes in a list of the chapters, that is, here, `chapter122.pdf` and `chapter121.pdf` are merged into `Jumbled Aot.pdf`. Notice the order is subjected to how the user gives input, and is not sequential.
+* This way of merging takes in a list of the chapters, that is, here, `chapter122.pdf` and `chapter121.pdf` are merged into `'Jumbled Aot.pdf'`. Notice the order is subjected to how the user gives input, and is not sequential.
 
 ### Note
 * The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
