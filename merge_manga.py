@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!python
 
 from pdfrw import PdfReader, PdfWriter
 import sys
