@@ -1,0 +1,7 @@
+*
+!.gitignore
+!search.py
+!merge_manga.py
+!manga_dl.py
+!README.md
+!*/
