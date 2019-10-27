@@ -90,6 +90,7 @@ python merge_manga.py list 122 121 Jumbled Aot
 
 ### Note
 * The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
+* For Windows users, there is a time limit of upto 5 minutes to download a chapter. Change the `timeout` argument appropriately in `manga_dl.py` in the `main` module.
 
 ### TODO
 * Add cleanup programs
