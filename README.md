@@ -96,6 +96,8 @@ Note :
 * `OUTPUT_PDF_NAME` can be space separated. It just needs to come after all the Chapter Numbers.
 * The Chapter numbers must be integers.
 
+## Miscellaneous
+
 ### Note
 * The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
 * For Windows users, there is a time limit of upto 5 minutes to download a chapter. Change the `timeout` argument appropriately in `manga_dl.py` in the `main` module.
