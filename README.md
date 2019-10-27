@@ -41,34 +41,42 @@ Example output:
 Enter the Manga number: (Press 0 to exit)
 1
 Enter the search query:
-121 122 range
+120 122 range
 ```
 
 * All the programs create subdirectories from the current directory in which the user invokes the program by default.
 
-* We input a `range` query to fetch both the chapters 121 and chapter 122, which are saved as `chapter121.pdf` and `chapter122.pdf` in a new(if it doesn't exist already) subdirectory called `Attack On Titan`.
+There are two types of seach queries:
 
-Another search query can be a list of chapter/s to be fetched.
+1. Range Query (`FIRST_CHAPTER LAST_CHAPTER range`)
 
-```
-Enter the search query:
-110 120 122
-```
+    We input a `range` query to fetch all the chapters between 120 and chapter 122 (both inclusive), which are saved as `chapter120.pdf`, `chapter121.pdf` and `chapter122.pdf` in a new(if it doesn't exist already) subdirectory called `Attack On Titan`. Note that this corresponds to the `Manga Name` field on the Table, and not the actual query itself, so there is no need to separately rename the directory if your query was too short.
 
-This fetches chapters 110, 120 and 122, which are saved in appropriate PDF files.
+2. List Query (`CHAPTER_X CHAPTER_Y CHAPTER_Z ...`)
+
+    Another search query can be a list of chapter/s to be fetched.
+
+    ```
+    Enter the search query:
+    110 120 122
+    ```
+
+    This fetches chapters 110, 120 and 122, which are saved in appropriate PDF files.
+
+Note : All `CHAPTER_X`s are Integers.
 
 ## Merging PDFs
 Merging of multiple PDF files can be accomplished via `merge_manga.py`, which processes a batch sequence of PDFs or a list of PDFs in order and merges them into an output PDF file.
 
 There are two ways of merging a batch of PDFs:
 
-* Sequential Merging (Merges PDFs in a range in sequential order)
+Sequential Merging (Merges PDFs in a range in sequential order)
 
-Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
+* Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
 
-* List Merging (Merges a list of PDFs in order)
+List Merging (Merges a list of PDFs in order)
 
-Invoke with : `python merge_manga.py {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
+* Invoke with : `python merge_manga.py {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
 
 Note : 
 
