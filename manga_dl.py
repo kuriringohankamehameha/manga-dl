@@ -102,7 +102,8 @@ def download_chapter(num, chapter_url, manga_dir):
             if pid > 0:
                 os.chdir(curr)
             else:
-                make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
+                make_pdf_simple("chapter" + str(num),
+                                listPages, os.getcwd(), curr)
                 remove(new_dir)
                 print('Finished Chapter ' + str(num))
                 exit(0)
@@ -111,6 +112,16 @@ def download_chapter(num, chapter_url, manga_dir):
             os.chdir(curr)
             remove(new_dir)
             print('Finished Chapter ' + str(num))
+
+
+def exit_with_msg():
+    print('Format:')
+    print('========> 1. START_CHAP END_CHAP range')
+    print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
+    print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
+    print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
+    exit(0)
+
 
 if __name__ == '__main__':
     """
@@ -121,7 +132,9 @@ if __name__ == '__main__':
 
     MIRROR = 'https://manganelo.com/'
 
-    manga_name, manga_hash = search.display_search('_'.join(sys.argv[1:]).lower())
+    manga_name, manga_hash = search.display_search(
+        '_'.join(sys.argv[1:]).lower()
+    )
 
     if manga_name is None:
         exit(0)
@@ -139,12 +152,7 @@ if __name__ == '__main__':
     inp_list = inp_string.split(' ')
 
     if inp_list[-1] == 'merge':
-        print('Format:')
-        print('========> 1. START_CHAP END_CHAP range')
-        print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
-        exit(0)
+        exit_with_msg()
     try:
         idx = inp_list.index('merge')
         OUTPUT_PDF = inp_list[idx + 1:]
@@ -160,12 +168,7 @@ if __name__ == '__main__':
     elif all(i.isdigit() for i in inp_list):
         chap_list = [int(i) for i in inp_list]
     else:
-        print('Format:')
-        print('========> 1. START_CHAP END_CHAP range')
-        print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
-        exit(0)
+        exit_with_msg()
 
     URL_CHAPTER = MIRROR + 'chapter/' + manga_hash + '/chapter_' + inp_list[0]
     count = None
@@ -184,8 +187,8 @@ if __name__ == '__main__':
                 continue
             else:
                 download_chapter(i, MIRROR + 'chapter/' +
-                        manga_hash + '/chapter_' + str(i),
-                        new_dir)
+                                 manga_hash + '/chapter_' + str(i),
+                                 new_dir)
                 exit(0)
     else:
         process_jobs = []
@@ -198,13 +201,11 @@ if __name__ == '__main__':
             job.get(timeout=300)
     if doMerge:
         if my_system != 'W':
+            # Wait for the child processes to finish
             while len(pids) > 0:
                 pid, status = os.wait()
                 if pid in pids:
                     pids.pop(pids.index(pid))
-        else:
-            print('Merging support in Windows presently not supported')
-            exit(0)
         merge_manga.perform_merge(
             [str(chap) for chap in chap_list] +
             OUTPUT_PDF + ['--clean']
