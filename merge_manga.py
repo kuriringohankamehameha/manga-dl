@@ -48,15 +48,15 @@ def exit_with_msg():
     exit(0)
 
 
-def perform_merge(argList):
+def perform_merge(argList, list_merge=False, do_cleanup=False):
     if len(argList) < 4:
         exit_with_msg()
+    if argList[-1] == '--clean':
+        argList.pop()
+        do_cleanup = True
     if not argList[1].isdigit():
         if argList[1] != 'list':
             exit_with_msg()
-        if argList[-1] == '--clean':
-            argList.pop()
-            do_cleanup = True
         if (not argList[2].isdigit()) or (argList[-1].isdigit()):
             exit_with_msg()
         list_merge = True

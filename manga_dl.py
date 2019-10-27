@@ -149,7 +149,7 @@ if __name__ == '__main__':
         idx = inp_list.index('merge')
         OUTPUT_PDF = inp_list[idx + 1:]
         doMerge = True
-        inp_list = inp_list[:idx-1]
+        inp_list = inp_list[:idx]
     except ValueError:
         pass
 
@@ -176,9 +176,11 @@ if __name__ == '__main__':
         os.mkdir(new_dir)
     os.chdir(new_dir)
     if my_system != 'W':
+        pids = []
         for i in chap_list:
             pid = os.fork()
             if pid > 0:
+                pids.append(pid)
                 continue
             else:
                 download_chapter(i, MIRROR + 'chapter/' +
@@ -195,6 +197,14 @@ if __name__ == '__main__':
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
     if doMerge:
+        if my_system != 'W':
+            while len(pids) > 0:
+                pid, status = os.wait()
+                if pid in pids:
+                    pids.pop(pids.index(pid))
+        else:
+            print('Merging support in Windows presently not supported')
+            exit(0)
         merge_manga.perform_merge(
             [str(chap) for chap in chap_list] +
             OUTPUT_PDF + ['--clean']
