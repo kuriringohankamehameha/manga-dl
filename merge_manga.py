@@ -5,9 +5,6 @@ import sys
 import os
 import shutil
 
-list_merge = False
-do_cleanup = False
-
 
 def mergepdfs(titles, name):
     outfn = name + '.pdf'
