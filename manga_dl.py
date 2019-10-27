@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     MIRROR = 'https://manganelo.com/'
 
-    manga_name, manga_hash = search.display_search(' '.join(sys.argv[1:]))
+    manga_name, manga_hash = search.display_search('_'.join(sys.argv[1:]).lower())
 
     if manga_name is None:
         exit(0)
@@ -162,14 +162,14 @@ if __name__ == '__main__':
             if pid > 0:
                 continue
             else:
-                download_chapter(i, MIRROR + 'chapter/' + 
-                        manga_hash + '/chapter_' + str(i), 
+                download_chapter(i, MIRROR + 'chapter/' +
+                        manga_hash + '/chapter_' + str(i),
                         new_dir)
                 exit(0)
     else:
         process_jobs = []
         for i in chap_list:
-            process_jobs.append(pool.apply_async(download_chapter, 
+            process_jobs.append(pool.apply_async(download_chapter,
                 [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
                     new_dir]))
         for job in process_jobs:
