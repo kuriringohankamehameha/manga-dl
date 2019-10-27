@@ -76,11 +76,11 @@ Sequential Merging (Merges PDFs in a range in sequential order)
 
 List Merging (Merges a list of PDFs in order)
 
-* Invoke with : `python merge_manga.py {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
+* Invoke with : `python merge_manga.py list {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
 
 Note : 
 
-* OUTPUT_PDF_NAME can be space separated. It just needs to come after the Chapter Numbers.
+* `OUTPUT_PDF_NAME` can be space separated. It just needs to come after all the Chapter Numbers.
 * The Chapter numbers must be integers.
 
 Example Output:
