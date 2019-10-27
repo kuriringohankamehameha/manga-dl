@@ -1,9 +1,17 @@
 # manga-dl
 A command line utility to download Manga and batch convert chapters into PDF
 
-* Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
+## Prerequisites
+Install all requirements using 
 
-* Windows users may need to update their `PYTHONPATH` environment variable. After that, you can invoke the scripts anywhere by specifying the absolute path if you want to run the script from anywhere, run :
+```bash
+pip install -r requirements.txt
+
+```
+
+Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
+
+Windows users may need to update their `PYTHONPATH` environment variable. After that, you can invoke the scripts anywhere by specifying the absolute path if you want to run the script from anywhere, run it like this:
 
 `python D:\manga-dl\manga_dl.py One Piece`
 
@@ -40,7 +48,7 @@ Enter the search query:
 
 * We input a `range` query to fetch both the chapters 121 and chapter 122, which are saved as `chapter121.pdf` and `chapter122.pdf` in a new(if it doesn't exist already) subdirectory called `Attack On Titan`.
 
-* Another search query can be a list of chapter/s to be fetched.
+Another search query can be a list of chapter/s to be fetched.
 
 ```
 Enter the search query:
