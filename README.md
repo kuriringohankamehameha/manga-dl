@@ -96,11 +96,21 @@ Note :
 * `OUTPUT_PDF_NAME` can be space separated. It just needs to come after all the Chapter Numbers.
 * The Chapter numbers must be integers.
 
+### Perform Cleanup
+The original PDFs can be removed after successful merging if the `--clean` flag is appended to the Merge Query.
+
+Example:
+
+```bash
+python merge_manga.py list 120 121 122 Aot Latest Chapters --clean
+```
+
+```bash
+python merge_manga.py 120 122 Aot Latest Chapters --clean
+```
+
+This flag must come at the very end
+
 ## Miscellaneous
-
 ### Note
-* The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
 * For Windows users, there is a time limit of upto 5 minutes to download a chapter. Change the `timeout` argument appropriately in `manga_dl.py` in the `main` module.
-
-### TODO
-* Add cleanup programs
