@@ -162,9 +162,9 @@ if __name__ == '__main__':
     else:
         print('Format:')
         print('========> 1. START_CHAP END_CHAP range')
-        print('========> 1. START_CHAP END_CHAP range merge')
+        print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
         print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge')
+        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
         exit(0)
 
     URL_CHAPTER = MIRROR + 'chapter/' + manga_hash + '/chapter_' + inp_list[0]
