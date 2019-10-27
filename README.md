@@ -11,6 +11,16 @@ pip install -r requirements.txt
 
 Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
 
+### \*NIX Users (Linux / Mac)
+\*NIX users can make the the files `manga_dl.py` and `merge_manga.py` executable via :
+
+`chmod +x manga_dl.py` and `chmod +x merge_manga.py`.
+
+You can run the program without explicitly invoking the `python` keyword, using :
+
+`manga_dl.py Attack on titan`.
+
+### Windows Users
 Windows users may need to update their `PYTHONPATH` environment variable. After that, you can invoke the scripts anywhere by specifying the absolute path if you want to run the script from anywhere, run it like this:
 
 `python D:\manga-dl\manga_dl.py One Piece`
