@@ -73,6 +73,14 @@ There are two types of seach queries:
 
     This fetches chapters 110, 120 and 122, which are saved in appropriate PDF files.
 
+3. Merge Query 
+    
+    The `merge` keyword can be appended to the Query to merge the downloaded PDFs into a single file.
+    
+    `FIRST_CHAPTER LAST_CHAPTER range merge OUTPUT_PDF_NAME`
+
+    `CHAPTER_X CHAPTER_Y CHAPTER_Z ... merge OUTPUT_PDF_NAME`
+
 Note : All `CHAPTER_X`s are Integers.
 
 ## Merging PDFs
