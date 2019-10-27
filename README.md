@@ -70,31 +70,31 @@ Merging of multiple PDF files can be accomplished via `merge_manga.py`, which pr
 
 There are two ways of merging a batch of PDFs:
 
-Sequential Merging (Merges PDFs in a range in sequential order)
+* Sequential Merging (Merges PDFs in a range in sequential order)
 
-* Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
-
-List Merging (Merges a list of PDFs in order)
-
-* Invoke with : `python merge_manga.py list {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
-
-Note : 
-
-* `OUTPUT_PDF_NAME` can be space separated. It just needs to come after all the Chapter Numbers.
-* The Chapter numbers must be integers.
+Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
 
 Example Output:
 
 ```bash
 python merge_manga.py 120 122 Attack on Titan Latest
 ```
-* This merges the files `chapter120.pdf`, `chapter121.pdf`, `chapter122.pdf` into `'Attack on Titan Latest.pdf'`. 
+This merges the files `chapter120.pdf`, `chapter121.pdf`, `chapter122.pdf` into `'Attack on Titan Latest.pdf'`. 
+
+* List Merging (Merges a list of PDFs in order)
+
+Invoke with : `python merge_manga.py list {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
 
 ```bash
 
 python merge_manga.py list 122 121 Jumbled Aot
 ```
-* This way of merging takes in a list of the chapters, that is, here, `chapter122.pdf` and `chapter121.pdf` are merged into `'Jumbled Aot.pdf'`. Notice the order is subjected to how the user gives input, and is not sequential.
+This way of merging takes in a list of the chapters, that is, here, `chapter122.pdf` and `chapter121.pdf` are merged into `'Jumbled Aot.pdf'`. Notice the order is subjected to how the user gives input, and is not sequential.
+
+Note : 
+
+* `OUTPUT_PDF_NAME` can be space separated. It just needs to come after all the Chapter Numbers.
+* The Chapter numbers must be integers.
 
 ### Note
 * The original PDFs are NOT deleted, and you may need to write a separate program which cleans up the output.
