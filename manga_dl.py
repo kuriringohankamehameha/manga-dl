@@ -8,6 +8,7 @@ from PIL import Image
 from bs4 import BeautifulSoup
 import shutil
 import search
+import merge_manga
 import platform
 
 machine = {'Linux': 'L', 'Windows': 'W', 'Darwin': 'M'}
@@ -132,9 +133,25 @@ if __name__ == '__main__':
     chapters = []
     chap_names = []
     chap_list = []
+    doMerge = False
 
     inp_string = input('Enter the search query:\n')
     inp_list = inp_string.split(' ')
+
+    if inp_list[-1] == 'merge':
+        print('Format:')
+        print('========> 1. START_CHAP END_CHAP range')
+        print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
+        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
+        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
+        exit(0)
+    try:
+        idx = inp_list.index('merge')
+        OUTPUT_PDF = inp_list[idx + 1:]
+        doMerge = True
+        inp_list = inp_list[:idx-1]
+    except ValueError:
+        pass
 
     if len(inp_list) == 1 and inp_list[0].isdigit():
         chap_list = [int(inp_list[0])]
@@ -145,7 +162,9 @@ if __name__ == '__main__':
     else:
         print('Format:')
         print('========> 1. START_CHAP END_CHAP range')
+        print('========> 1. START_CHAP END_CHAP range merge')
         print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
+        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge')
         exit(0)
 
     URL_CHAPTER = MIRROR + 'chapter/' + manga_hash + '/chapter_' + inp_list[0]
@@ -175,4 +194,9 @@ if __name__ == '__main__':
         for job in process_jobs:
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
+    if doMerge:
+        merge_manga.perform_merge(
+            [str(chap) for chap in chap_list] +
+            OUTPUT_PDF + ['--clean']
+            )
     os.chdir(orig)
