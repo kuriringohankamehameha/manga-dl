@@ -70,7 +70,7 @@ Merging of multiple PDF files can be accomplished via `merge_manga.py`, which pr
 
 There are two ways of merging a batch of PDFs:
 
-* Sequential Merging (Merges PDFs in a range in sequential order)
+### Sequential Merging (Merges PDFs in a range in sequential order)
 
 Invoke with : `python merge_manga.py {START_CHAPTER} {END_CHAPTER} {OUTPUT_PDF_NAME}` 
 
@@ -81,7 +81,7 @@ python merge_manga.py 120 122 Attack on Titan Latest
 ```
 This merges the files `chapter120.pdf`, `chapter121.pdf`, `chapter122.pdf` into `'Attack on Titan Latest.pdf'`. 
 
-* List Merging (Merges a list of PDFs in order)
+### List Merging (Merges a list of PDFs in order)
 
 Invoke with : `python merge_manga.py list {CHAPTER_X} {CHAPTER_Y} ..... {OUTPUT_PDF_NAME}`
 
