@@ -132,3 +132,6 @@ This flag must come at the very end
 ## Miscellaneous
 ### Note
 * For Windows users, there is a time limit of upto 5 minutes to download a chapter. Change the `timeout` argument appropriately in `manga_dl.py` in the `main` module.
+
+### TODO
+* There may be situations where some of the chapters are missing in the mirror website itself. Handle that situation by displaying a Yes/No option, if the user wishes to merge, along with the missing chapters displayed.
