@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import time
+from tqdm import tqdm
 import os
 import sys
 import re
@@ -8,6 +10,7 @@ from PIL import Image
 from bs4 import BeautifulSoup
 import shutil
 import search
+import merge_manga
 import platform
 
 machine = {'Linux': 'L', 'Windows': 'W', 'Darwin': 'M'}
@@ -101,7 +104,8 @@ def download_chapter(num, chapter_url, manga_dir):
             if pid > 0:
                 os.chdir(curr)
             else:
-                make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
+                make_pdf_simple("chapter" + str(num),
+                                listPages, os.getcwd(), curr)
                 remove(new_dir)
                 print('Finished Chapter ' + str(num))
                 exit(0)
@@ -110,6 +114,16 @@ def download_chapter(num, chapter_url, manga_dir):
             os.chdir(curr)
             remove(new_dir)
             print('Finished Chapter ' + str(num))
+
+
+def exit_with_msg():
+    print('Format:')
+    print('========> 1. START_CHAP END_CHAP range')
+    print('========> 1. START_CHAP END_CHAP range merge OUTPUT_PDF')
+    print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
+    print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... merge OUTPUT_PDF')
+    exit(0)
+
 
 if __name__ == '__main__':
     """
@@ -120,7 +134,9 @@ if __name__ == '__main__':
 
     MIRROR = 'https://manganelo.com/'
 
-    manga_name, manga_hash = search.display_search('_'.join(sys.argv[1:]).lower())
+    manga_name, manga_hash = search.display_search(
+        '_'.join(sys.argv[1:]).lower()
+    )
 
     if manga_name is None:
         exit(0)
@@ -132,9 +148,20 @@ if __name__ == '__main__':
     chapters = []
     chap_names = []
     chap_list = []
+    doMerge = False
 
     inp_string = input('Enter the search query:\n')
     inp_list = inp_string.split(' ')
+
+    if inp_list[-1] == 'merge':
+        exit_with_msg()
+    try:
+        idx = inp_list.index('merge')
+        OUTPUT_PDF = inp_list[idx + 1:]
+        doMerge = True
+        inp_list = inp_list[:idx]
+    except ValueError:
+        pass
 
     if len(inp_list) == 1 and inp_list[0].isdigit():
         chap_list = [int(inp_list[0])]
@@ -143,10 +170,7 @@ if __name__ == '__main__':
     elif all(i.isdigit() for i in inp_list):
         chap_list = [int(i) for i in inp_list]
     else:
-        print('Format:')
-        print('========> 1. START_CHAP END_CHAP range')
-        print('========> 2. CHAP_1 CHAP_2 CHAP_3 ... ')
-        exit(0)
+        exit_with_msg()
 
     URL_CHAPTER = MIRROR + 'chapter/' + manga_hash + '/chapter_' + inp_list[0]
     count = None
@@ -157,14 +181,16 @@ if __name__ == '__main__':
         os.mkdir(new_dir)
     os.chdir(new_dir)
     if my_system != 'W':
+        pids = []
         for i in chap_list:
             pid = os.fork()
             if pid > 0:
+                pids.append(pid)
                 continue
             else:
                 download_chapter(i, MIRROR + 'chapter/' +
-                        manga_hash + '/chapter_' + str(i),
-                        new_dir)
+                                 manga_hash + '/chapter_' + str(i),
+                                 new_dir)
                 exit(0)
     else:
         process_jobs = []
@@ -172,7 +198,23 @@ if __name__ == '__main__':
             process_jobs.append(pool.apply_async(download_chapter,
                 [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
                     new_dir]))
-        for job in process_jobs:
+        for job, _ in zip(process_jobs, tqdm(range(len(process_jobs)))):
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
+
+    orig_len = len(pids)
+    if my_system != 'W':
+        # Wait for the child processes to finish
+        # while len(pids) > 0:
+        for _ in tqdm(range(orig_len)):
+            pid, status = os.wait()
+            if pid in pids:
+                pids.pop(pids.index(pid))
+    if doMerge:
+        time.sleep(1)
+        merge_manga.perform_merge(
+            ['merge_manga.py', 'list'] + [str(chap) for chap in chap_list] +
+            OUTPUT_PDF + ['--clean']
+            )
+        print('Merged chapters into {}!'.format(' '.join(OUTPUT_PDF) + '.pdf'))
     os.chdir(orig)
