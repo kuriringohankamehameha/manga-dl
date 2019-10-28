@@ -29,8 +29,8 @@ def perform_cleanup_range(start_chapter, end_chapter):
         remove(os.path.join(os.getcwd(), "chapter" + str(i) + ".pdf"))
 
 
-def perform_cleanup_list(start_index, end_index):
-    for i in sys.argv[start_index:end_index]:
+def perform_cleanup_list(argList, start_index, end_index):
+    for i in argList[start_index:end_index]:
         remove(os.path.join(os.getcwd(), "chapter" + str(i) + ".pdf"))
 
 
@@ -74,7 +74,7 @@ def perform_merge(argList, list_merge=False, do_cleanup=False):
                    for i in argList[2:max_index]],
                   ' '.join(argList[max_index:]))
         if do_cleanup:
-            perform_cleanup_list(2, max_index)
+            perform_cleanup_list(argList, 2, max_index)
     else:
         assert int(argList[1]) <= int(argList[2])
         for i in range(int(argList[1]), int(argList[2]) + 1):
