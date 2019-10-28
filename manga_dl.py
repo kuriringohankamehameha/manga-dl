@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import time
+from tqdm import tqdm
 import os
 import sys
 import re
@@ -196,18 +198,23 @@ if __name__ == '__main__':
             process_jobs.append(pool.apply_async(download_chapter,
                 [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
                     new_dir]))
-        for job in process_jobs:
+        for job, _ in zip(process_jobs, tqdm(range(len(process_jobs)))):
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
+
+    orig_len = len(pids)
+    if my_system != 'W':
+        # Wait for the child processes to finish
+        # while len(pids) > 0:
+        for _ in tqdm(range(orig_len)):
+            pid, status = os.wait()
+            if pid in pids:
+                pids.pop(pids.index(pid))
     if doMerge:
-        if my_system != 'W':
-            # Wait for the child processes to finish
-            while len(pids) > 0:
-                pid, status = os.wait()
-                if pid in pids:
-                    pids.pop(pids.index(pid))
+        time.sleep(1)
         merge_manga.perform_merge(
-            [str(chap) for chap in chap_list] +
+            ['merge_manga.py', 'list'] + [str(chap) for chap in chap_list] +
             OUTPUT_PDF + ['--clean']
             )
+        print('Merged chapters into {}!'.format(' '.join(OUTPUT_PDF) + '.pdf'))
     os.chdir(orig)
