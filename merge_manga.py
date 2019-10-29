@@ -45,7 +45,9 @@ def exit_with_msg():
     exit(0)
 
 
-def perform_merge(argList, list_merge=False, do_cleanup=False):
+def perform_merge(argList, list_merge=False, do_cleanup=False, is_main=False):
+    give_warning = False
+    missing_chaps = []
     if len(argList) < 4:
         exit_with_msg()
     if argList[-1] == '--clean':
@@ -64,12 +66,31 @@ def perform_merge(argList, list_merge=False, do_cleanup=False):
                 try:
                     assert os.path.isfile("chapter" + str(i) + ".pdf")
                 except AssertionError:
-                    print('The file {} does not exist. Download it and try again'
-                          .format('chapter' + str(i) + '.pdf'))
-                    exit(0)
+                    if is_main:
+                        print('The file {} does not exist. Download it and try again'
+                            .format('chapter' + str(i) + '.pdf'))
+                        exit(0)
+                    else:
+                        give_warning = True
+                        missing_chaps.append(i)
+                        continue
             else:
                 max_index = index + 2
                 break
+        if give_warning:
+            print('Warning: Chapters', ', '.join(
+                str(i) for i in missing_chaps
+            ), 'are missing. Do you still wish to merge? (Y/n)')
+            yes = {'Y', 'y', 'yes'}
+            no = {'n', 'no'}
+            while True:
+                choice = input()
+                if choice in yes:
+                    break
+                elif choice in no:
+                    exit(0)
+                else:
+                    print('Please respond with \'Y\' or \'n\'.')
         mergepdfs(["chapter" + str(i) + ".pdf"
                    for i in argList[2:max_index]],
                   ' '.join(argList[max_index:]))
@@ -93,4 +114,4 @@ def perform_merge(argList, list_merge=False, do_cleanup=False):
 
 
 if __name__ == '__main__':
-    perform_merge(sys.argv)
+    perform_merge(sys.argv, is_main=True)
