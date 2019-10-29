@@ -207,9 +207,13 @@ if __name__ == '__main__':
         # Wait for the child processes to finish
         # while len(pids) > 0:
         for _ in tqdm(range(orig_len)):
-            pid, status = os.wait()
-            if pid in pids:
-                pids.pop(pids.index(pid))
+            while True:
+                # Increase progress bar only if the terminated process is one of the
+                # spawned children
+                pid, status = os.wait()
+                if pid in pids:
+                    pids.pop(pids.index(pid))
+                    break
     if doMerge:
         time.sleep(1)
         merge_manga.perform_merge(
