@@ -51,14 +51,17 @@ Example output:
 Enter the Manga number: (Press 0 to exit)
 1
 Enter the search query:
-120 122 range
+120 122 range merge Aot Latest
 ```
+
+The above query fetches chapters 120 to 122 and puts them in a PDF file called `Aot Latest.pdf`.
 
 * All the programs create subdirectories from the current directory in which the user invokes the program by default.
 
 There are two types of seach queries:
 
 1. Range Query (`FIRST_CHAPTER LAST_CHAPTER range`)
+    `120 122 range`
 
     We input a `range` query to fetch all the chapters between 120 and chapter 122 (both inclusive), which are saved as `chapter120.pdf`, `chapter121.pdf` and `chapter122.pdf` in a new(if it doesn't exist already) subdirectory called `Attack On Titan`. Note that this corresponds to the `Manga Name` field on the Table, and not the actual query itself, so there is no need to separately rename the directory if your query was too short.
 
