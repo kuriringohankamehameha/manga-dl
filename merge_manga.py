@@ -73,6 +73,7 @@ def perform_merge(argList, list_merge=False, do_cleanup=False, is_main=False):
                     else:
                         give_warning = True
                         missing_chaps.append(i)
+                        remove(os.path.join(os.getcwd(), 'chapter_' + str(i)))
                         continue
             else:
                 [argList.remove(i) for i in missing_chaps]
