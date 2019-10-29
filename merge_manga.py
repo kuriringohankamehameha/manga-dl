@@ -75,7 +75,11 @@ def perform_merge(argList, list_merge=False, do_cleanup=False, is_main=False):
                         missing_chaps.append(i)
                         continue
             else:
-                max_index = index + 2
+                [argList.remove(i) for i in missing_chaps]
+                max_index = index + 2 - len(missing_chaps)
+                if max_index <= 2:
+                    print('All chapters are missing. Maybe the mirror link is bad?')
+                    exit(0)
                 break
         if give_warning:
             print('Warning: Chapters', ', '.join(
