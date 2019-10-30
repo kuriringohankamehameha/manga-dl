@@ -84,6 +84,14 @@ There are two types of seach queries:
 
     `CHAPTER_X CHAPTER_Y CHAPTER_Z ... merge OUTPUT_PDF_NAME`
 
+4. Convert to `cbz` (Comic Book Zip Format)
+    
+    An additional flag `--cbz` can be appended to the end of the query string to generate a `.cbz` file instead of a `.pdf` file in the merge query.
+
+    The below query merges chapters 1 to 20 in a file called `Volume1.cbz`:
+
+    `1 20 range merge Volume1 --cbz`
+
 Note : All `CHAPTER_X`s are Integers.
 
 ## Merging PDFs
