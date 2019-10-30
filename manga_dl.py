@@ -4,7 +4,6 @@ import time
 from tqdm import tqdm
 import os
 import sys
-import re
 import requests
 from PIL import Image
 from bs4 import BeautifulSoup
@@ -25,8 +24,8 @@ if my_system == 'E':
     print('Error: System is not Linux/Windows/Mac')
     exit(0)
 elif my_system == 'W':
-    from multiprocessing import Pool
     if __name__ == '__main__':
+        from multiprocessing import Pool
         pool = Pool()
 
 
@@ -38,13 +37,6 @@ def process_chapter(url_list, chapter_url):
         for npost in post.find_all('img'):
             url_list.append(npost['src'])
     return url_list
-
-
-def check(pattern, string):
-    """ Check if string matches the regex pattern """
-    if re.match(pattern, string) is not None:
-        return True
-    return False
 
 
 def remove(path):
@@ -81,7 +73,25 @@ def make_pdf_simple(pdfFileName, listPages, curr, parent):
                resolution=100.0, save_all=True, append_images=im_list)
 
 
-def download_chapter(num, chapter_url, manga_dir):
+def make_zip(zipFileName, listPages, curr, parent):
+    """ Convert the batch of images into a zip file """
+    import zipfile
+    if (parent):
+        parent += "/"
+    if (curr):
+        curr += "/"
+    compression = zipfile.ZIP_DEFLATED
+    zf = zipfile.ZipFile(parent + zipFileName + ".cbz", "w")
+    try:
+        for page in listPages:
+            zf.write(curr + page + ".jpg", page + ".jpg", compress_type=compression)
+    except FileNotFoundError:
+        print("File Not Found")
+    finally:
+        zf.close()
+
+
+def download_chapter(num, chapter_url, manga_dir, format='pdf'):
     """ Download #num chapter of the manga """
     if isinstance(num, int):
         curr = manga_dir
@@ -104,13 +114,27 @@ def download_chapter(num, chapter_url, manga_dir):
             if pid > 0:
                 os.chdir(curr)
             else:
-                make_pdf_simple("chapter" + str(num),
-                                listPages, os.getcwd(), curr)
+                if format == 'pdf':
+                    make_pdf_simple("chapter" + str(num),
+                                    listPages, os.getcwd(), curr)
+                elif format == 'cbz':
+                    make_zip("chapter" + str(num),
+                             listPages, os.getcwd(), curr)
+                else:
+                    print('Format currently unsupported')
+                    exit(0)
                 remove(new_dir)
                 print('Finished Chapter ' + str(num))
                 exit(0)
         else:
-            make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
+            if format == 'pdf':
+                make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
+            elif format == 'cbz':
+                make_zip("chapter" + str(num),
+                        listPages, os.getcwd(), curr)
+            else:
+                print('Format currently unsupported')
+                exit(0)
             os.chdir(curr)
             remove(new_dir)
             print('Finished Chapter ' + str(num))
@@ -143,16 +167,19 @@ if __name__ == '__main__':
 
     URL_MANGA = MIRROR + 'manga/' + manga_hash
     TITLE = manga_name
-    pattern = r'.*chapter\ [0-9]+'
 
     chapters = []
     chap_names = []
     chap_list = []
     doMerge = False
+    fmt = 'pdf'
 
     inp_string = input('Enter the search query:\n')
     inp_list = inp_string.split(' ')
 
+    if inp_list[-1] == '--cbz':
+        del inp_list[-1]
+        fmt = 'cbz'
     if inp_list[-1] == 'merge':
         exit_with_msg()
     try:
@@ -189,15 +216,15 @@ if __name__ == '__main__':
                 continue
             else:
                 download_chapter(i, MIRROR + 'chapter/' +
-                                 manga_hash + '/chapter_' + str(i),
-                                 new_dir)
+                                manga_hash + '/chapter_' + str(i),
+                                new_dir, format=fmt)
                 exit(0)
     else:
         process_jobs = []
         for i in chap_list:
             process_jobs.append(pool.apply_async(download_chapter,
                 [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
-                    new_dir]))
+                    new_dir, fmt]))
         for job, _ in zip(process_jobs, tqdm(range(len(process_jobs)))):
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
@@ -214,7 +241,7 @@ if __name__ == '__main__':
                 if pid in pids:
                     pids.pop(pids.index(pid))
                     break
-    if doMerge:
+    if doMerge and fmt == 'pdf':
         time.sleep(1)
         merge_manga.perform_merge(
             ['merge_manga.py', 'list'] + [str(chap) for chap in chap_list] +
