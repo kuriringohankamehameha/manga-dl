@@ -31,7 +31,10 @@ elif my_system == 'W':
 
 def process_chapter(url_list, chapter_url):
     """ Get the URLs of each page in the chapter """
-    html = requests.get(chapter_url).content
+    try:
+        html = requests.get(chapter_url).content
+    except requests.exceptions.ConnectionError:
+        print('Error while connecting. Try again')
     soup = BeautifulSoup(html, 'html.parser')
     for post in soup.find_all('div', {'class': 'vung-doc'}):
         for npost in post.find_all('img'):
@@ -73,7 +76,7 @@ def make_pdf_simple(pdfFileName, listPages, curr, parent):
                resolution=100.0, save_all=True, append_images=im_list)
 
 
-def make_zip(zipFileName, listPages, curr, parent):
+def make_zip(zipFileName, listPages, curr, parent, format='.zip'):
     """ Convert the batch of images into a zip file """
     import zipfile
     if (parent):
@@ -81,7 +84,7 @@ def make_zip(zipFileName, listPages, curr, parent):
     if (curr):
         curr += "/"
     compression = zipfile.ZIP_DEFLATED
-    zf = zipfile.ZipFile(parent + zipFileName + ".cbz", "w")
+    zf = zipfile.ZipFile(parent + zipFileName + format, "w")
     try:
         for page in listPages:
             zf.write(curr + page + ".jpg", page + ".jpg", compress_type=compression)
@@ -117,9 +120,9 @@ def download_chapter(num, chapter_url, manga_dir, format='pdf'):
                 if format == 'pdf':
                     make_pdf_simple("chapter" + str(num),
                                     listPages, os.getcwd(), curr)
-                elif format == 'cbz':
+                elif format in ('cbz', 'zip'):
                     make_zip("chapter" + str(num),
-                             listPages, os.getcwd(), curr)
+                             listPages, os.getcwd(), curr, '.' + format)
                 else:
                     print('Format currently unsupported')
                     exit(0)
@@ -129,9 +132,9 @@ def download_chapter(num, chapter_url, manga_dir, format='pdf'):
         else:
             if format == 'pdf':
                 make_pdf_simple("chapter" + str(num), listPages, os.getcwd(), curr)
-            elif format == 'cbz':
+            elif format in ('cbz', 'zip'):
                 make_zip("chapter" + str(num),
-                        listPages, os.getcwd(), curr)
+                        listPages, os.getcwd(), curr, '.' + format)
             else:
                 print('Format currently unsupported')
                 exit(0)
@@ -180,6 +183,9 @@ if __name__ == '__main__':
     if inp_list[-1] == '--cbz':
         del inp_list[-1]
         fmt = 'cbz'
+    elif inp_list[-1] == '--zip':
+        del inp_list[-1]
+        fmt = 'zip'
     if inp_list[-1] == 'merge':
         exit_with_msg()
     try:
