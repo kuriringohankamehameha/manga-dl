@@ -1,5 +1,5 @@
 # manga-dl
-A command line utility to download Manga and batch convert chapters into PDF
+A command line utility to download Manga and batch convert chapters into PDF/ZIP/CBZ
 
 ## Prerequisites
 Install all requirements using 
@@ -10,6 +10,8 @@ pip install -r requirements.txt
 ```
 
 Before using this program, make sure that you update your `PATH` environment variable to include the directory of the cloned repository or wherever you intend to keep the source files. 
+
+By default, this converts the chapters into PDF unless you explicitly specify the save format as a flag.
 
 ### \*NIX Users (Linux / Mac)
 \*NIX users can make the the files `manga_dl.py` and `merge_manga.py` executable via :
