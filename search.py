@@ -49,17 +49,19 @@ def display_search(manga_name):
                          CBLUE + 'Latest Chapter' + CEND,
                          CGREEN + 'Update Time' + CEND])
     for post, recent_chap, update_time in zip(
-            soup.find_all(match_class(["story_name"])),
-            soup.find_all(match_class(["story_chapter"])),
-            soup.find_all('span')[4::3]
+            # soup.find_all(match_class(["search-story-item"])),
+            soup.find_all(match_class(["item-right"])),
+            soup.find_all(match_class(["item-chapter"])),
+            # soup.find_all('span')[4::3]
+            soup.find_all(match_class(["item-time"]))[::2]
     ):
         table.add_row([CGREEN + str(count+1) + CEND,
-                       CBLUE + post.text.strip() + CEND,
+                       CBLUE + post.h3.text.strip() + CEND,
                        CGREEN + recent_chap.text.strip() + CEND,
                        CYELLOW + update_time.text.strip() + CEND])
-        name_list.append(post.text.strip())
+        name_list.append(post.h3.text.strip())
         count += 1
-        for npost in post.find_all('a'):
+        for npost in post.h3.find_all('a'):
             post_list.append(npost['href'].split('/')[-1])
     assert len(post_list) == count
     if count == 0:
