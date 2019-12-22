@@ -1,17 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
-import sys
 from prettytable import PrettyTable
 import platform
 
 mirror = 'https://manganelo.com/search/'
 
-title = ''
-
 post_list = []
 name_list = []
 
-if platform.system() != 'Windows': 
+if platform.system() != 'Windows':
     # For printing ANSI Colors in *NIX
     CRED = '\033[91m'
     CEND = '\033[0m'
@@ -26,12 +23,6 @@ else:
     CBLUE = ''
     CGREEN = ''
 
-if len(sys.argv) < 2:
-    print('Format: python search.py MANGA_NAME')
-    exit(0)
-else:
-    title = '_'.join(sys.argv[1:]).lower()
-
 
 def match_class(target):
     def do_match(tag):
@@ -41,7 +32,7 @@ def match_class(target):
 
 
 def display_search(manga_name):
-    html = requests.get(mirror + title).content
+    html = requests.get(mirror + manga_name).content
     soup = BeautifulSoup(html, 'html.parser')
     count = 0
     table = PrettyTable([CRED + 'S.No' + CEND,
@@ -76,3 +67,13 @@ def display_search(manga_name):
         return name_list[manga_num-1], post_list[manga_num-1]
     print('Error. Index out of bounds. Maximum number is {}'.format(count))
     return (None, None)
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) < 2:
+        print('Format: python search.py MANGA_NAME')
+        exit(0)
+    else:
+        title = '_'.join(sys.argv[1:]).lower()
+    display_search(title)
