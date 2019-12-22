@@ -31,7 +31,7 @@ def process_chapter(url_list, chapter_url):
     """ Get the URLs of each page in the chapter """
     html = requests.get(chapter_url).content
     soup = BeautifulSoup(html, 'html.parser')
-    for post in soup.find_all('div', {'class': 'vung-doc'}):
+    for post in soup.find_all('div', {'class': 'container-chapter-reader'}):
         for npost in post.find_all('img'):
             url_list.append(npost['src'])
     return url_list
