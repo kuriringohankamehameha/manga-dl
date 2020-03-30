@@ -235,8 +235,8 @@ if __name__ == '__main__':
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
 
-    orig_len = len(pids)
     if my_system != 'W':
+        orig_len = len(pids)
         # Wait for the child processes to finish
         # while len(pids) > 0:
         for _ in tqdm(range(orig_len)):
