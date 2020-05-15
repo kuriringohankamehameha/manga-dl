@@ -16,7 +16,7 @@ By default, this converts the chapters into PDF unless you explicitly specify th
 ## Update
 The server seems to have changed, with a modified setup now in place. Please ensure that you don't indiscriminately request the overloaded servers.
 
-There could also be some issues when pinging from Linux machines, so you may get some handshake errors. If this is an issue, consider reporting an issue.
+There could also be some issues when pinging from Linux machines, so you may get some handshake errors. If you encounter this problem, consider reporting an issue.
 
 ### \*NIX Users (Linux / Mac)
 \*NIX users can make the the files `manga_dl.py` and `merge_manga.py` executable via :
