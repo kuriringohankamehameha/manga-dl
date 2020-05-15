@@ -114,11 +114,15 @@ def download_chapter(num, chapter_url, manga_dir, referral_url, format='pdf'):
         headers['referer'] = chapter_url
         for img_url in url_list:
             r = requests.get(img_url, headers=headers)
+            if r.status_code != 200:
+                raise ValueError('Server is not allowing requests from the client. Possible Cloudflare setup. Please file an issue here: https://github.com/kuriringohankamehameha/manga-dl')
             with open('chapter_' + str(num) + '_' +
                       str(i) + '.jpg', 'wb') as f:
                 f.write(r.content)
-                listPages.append('chapter_' + str(num) + '_' + str(i))
-                i += 1
+            listPages.append('chapter_' + str(num) + '_' + str(i))
+            i += 1
+            # Avoid indiscriminate pinging. Be polite
+            time.sleep(0.5)
         if my_system != 'W':
             pid = os.fork()
             if pid > 0:
