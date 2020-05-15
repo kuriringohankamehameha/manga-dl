@@ -11,6 +11,11 @@ import shutil
 import search
 import merge_manga
 import platform
+from fake_useragent import UserAgent
+
+ua = UserAgent()
+
+headers = { 'User-Agent' : str(ua.chrome) }
 
 machine = {'Linux': 'L', 'Windows': 'W', 'Darwin': 'M'}
 
@@ -29,10 +34,11 @@ elif my_system == 'W':
         pool = Pool()
 
 
-def process_chapter(url_list, chapter_url):
+def process_chapter(url_list, chapter_url, referral_url):
     """ Get the URLs of each page in the chapter """
     try:
-        html = requests.get(chapter_url).content
+        headers['referer'] = referral_url
+        html = requests.get(chapter_url, headers=headers).content
     except requests.exceptions.ConnectionError:
         print('Error while connecting. Try again')
     soup = BeautifulSoup(html, 'html.parser')
@@ -94,7 +100,7 @@ def make_zip(zipFileName, listPages, curr, parent, format='.zip'):
         zf.close()
 
 
-def download_chapter(num, chapter_url, manga_dir, format='pdf'):
+def download_chapter(num, chapter_url, manga_dir, referral_url, format='pdf'):
     """ Download #num chapter of the manga """
     if isinstance(num, int):
         curr = manga_dir
@@ -102,11 +108,12 @@ def download_chapter(num, chapter_url, manga_dir, format='pdf'):
         if os.path.isdir(new_dir) is False:
             os.mkdir(new_dir)
         os.chdir(new_dir)
-        url_list = process_chapter([], chapter_url)
+        url_list = process_chapter([], chapter_url, referral_url)
         listPages = []
         i = 2
+        headers['referer'] = chapter_url
         for img_url in url_list:
-            r = requests.get(img_url)
+            r = requests.get(img_url, headers=headers)
             with open('chapter_' + str(num) + '_' +
                       str(i) + '.jpg', 'wb') as f:
                 f.write(r.content)
@@ -223,14 +230,14 @@ if __name__ == '__main__':
             else:
                 download_chapter(i, MIRROR + 'chapter/' +
                                 manga_hash + '/chapter_' + str(i),
-                                new_dir, format=fmt)
+                                new_dir, referral_url=URL_MANGA, format=fmt)
                 exit(0)
     else:
         process_jobs = []
         for i in chap_list:
             process_jobs.append(pool.apply_async(download_chapter,
                 [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
-                    new_dir, fmt]))
+                    new_dir, URL_MANGA, fmt]))
         for job, _ in zip(process_jobs, tqdm(range(len(process_jobs)))):
             # A job takes a maximum time of 300 seconds
             job.get(timeout=300)
