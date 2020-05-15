@@ -13,6 +13,9 @@ Before using this program, make sure that you update your `PATH` environment var
 
 By default, this converts the chapters into PDF unless you explicitly specify the save format as a flag.
 
+## Update
+The server seems to have changed, with a modified setup now in place. Please ensure that you don't indiscriminately request the overloaded servers. There could also be some issues when pinging from Linux machines, so you may get some handshake errors. Unfortunately, this is a server error, so you must find alternatives until that time, if you're using Linux. This still works with Windows, as of now.
+
 ### \*NIX Users (Linux / Mac)
 \*NIX users can make the the files `manga_dl.py` and `merge_manga.py` executable via :
 
