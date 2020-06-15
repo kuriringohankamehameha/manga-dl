@@ -19,6 +19,10 @@ headers = { 'User-Agent' : str(ua.chrome) }
 
 machine = {'Linux': 'L', 'Windows': 'W', 'Darwin': 'M'}
 
+session = requests.Session()
+
+API_URL = 'https://manganelo.com/getstorysearchjson'
+
 try:
     my_system = machine.get(platform.system(), 'E')
 except KeyError:
@@ -38,7 +42,7 @@ def process_chapter(url_list, chapter_url, referral_url):
     """ Get the URLs of each page in the chapter """
     try:
         headers['referer'] = referral_url
-        html = requests.get(chapter_url, headers=headers).content
+        html = session.get(chapter_url, headers=headers).content
     except requests.exceptions.ConnectionError:
         print('Error while connecting. Try again')
     soup = BeautifulSoup(html, 'html.parser')
@@ -113,7 +117,7 @@ def download_chapter(num, chapter_url, manga_dir, referral_url, format='pdf'):
         i = 2
         headers['referer'] = chapter_url
         for img_url in url_list:
-            r = requests.get(img_url, headers=headers)
+            r = session.get(img_url, headers=headers)
             if r.status_code != 200:
                 raise ValueError('Server is not allowing requests from the client. Possible Cloudflare setup. Please file an issue here: https://github.com/kuriringohankamehameha/manga-dl')
             with open('chapter_' + str(num) + '_' +

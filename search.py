@@ -2,6 +2,11 @@ from bs4 import BeautifulSoup
 import requests
 from prettytable import PrettyTable
 import platform
+import sys
+
+from manga_dl import headers, session, API_URL
+
+import json
 
 mirror = 'https://manganelo.com/search/'
 
@@ -32,28 +37,31 @@ def match_class(target):
 
 
 def display_search(manga_name):
-    html = requests.get(mirror + manga_name).content
-    soup = BeautifulSoup(html, 'html.parser')
+    payload = {'searchword': manga_name}
+    
+    response = session.post(API_URL, headers={**headers, 'content-type': 'application/x-www-form-urlencoded'}, data=payload)
+    html = response.content
+
+    content = json.loads(html)
+
     count = 0
     table = PrettyTable([CRED + 'S.No' + CEND,
                          CYELLOW + 'Manga Name' + CEND,
-                         CBLUE + 'Latest Chapter' + CEND,
-                         CGREEN + 'Update Time' + CEND])
-    for post, recent_chap, update_time in zip(
-            # soup.find_all(match_class(["search-story-item"])),
-            soup.find_all(match_class(["item-right"])),
-            soup.find_all(match_class(["item-chapter"])),
-            # soup.find_all('span')[4::3]
-            soup.find_all(match_class(["item-time"]))[::2]
-    ):
-        table.add_row([CGREEN + str(count+1) + CEND,
-                       CBLUE + post.h3.text.strip() + CEND,
-                       CGREEN + recent_chap.text.strip() + CEND,
-                       CYELLOW + update_time.text.strip() + CEND])
-        name_list.append(post.h3.text.strip())
+                         CBLUE + 'Latest Chapter' + CEND
+                         ])
+    for manga in content:
+        post_list.append(manga['id_encode'])
+        name_text = manga['name']
+        soup = BeautifulSoup(name_text, features="lxml")
+        name = ' '.join([s.contents[0] for s in soup.findAll('span')])
+        if name is None or name.strip() == '':
+            name = name_text
+        last_chapter = manga['lastchapter']
+        name_list.append(name)
+        table.add_row([CGREEN + str(count + 1) + CEND,
+            CBLUE + name + CEND,
+            CGREEN + last_chapter + CEND])
         count += 1
-        for npost in post.h3.find_all('a'):
-            post_list.append(npost['href'].split('/')[-1])
     assert len(post_list) == count
     if count == 0:
         print('No manga named {}. Please enter another keyword'
