@@ -242,13 +242,20 @@ if __name__ == '__main__':
                 exit(0)
     else:
         process_jobs = []
-        for i in chap_list:
-            process_jobs.append(pool.apply_async(download_chapter,
-                [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
-                    new_dir, URL_MANGA, fmt]))
-        for job, _ in zip(process_jobs, tqdm(range(len(process_jobs)))):
-            # A job takes a maximum time of 300 seconds
-            job.get(timeout=300)
+        BATCH_SIZE = 5
+        size = len(chap_list)
+        with tqdm(total=size) as pbar:
+            for idx in range(0, size, BATCH_SIZE):
+                batch_size = min(size - idx, BATCH_SIZE)
+                batch = chap_list[idx: idx + batch_size]
+                for i in batch:
+                    process_jobs.append(pool.apply_async(download_chapter,
+                        [i, MIRROR + 'chapter/' + manga_hash + '/chapter_' + str(i),
+                            new_dir, URL_MANGA, fmt]))
+                for job in process_jobs:
+                    # A job takes a maximum time of 300 seconds
+                    job.get(timeout=300)
+                    pbar.update(1)
 
     if my_system != 'W':
         orig_len = len(pids)
